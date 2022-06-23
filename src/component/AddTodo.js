@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 import { Button, TextField } from "@mui/material";
+import { DesktopDatePicker , LocalizationProvider} from '@mui/x-date-pickers';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 
 class AddTodo extends Component {
   // Create a local react state of the this component with both content date property set to nothing.
@@ -7,7 +9,8 @@ class AddTodo extends Component {
     super();
     this.state = {
       content: "",
-      date: ""
+      date: "",
+      due: null,
     };
   }
   // The handleChange function updates the react state with the new input value provided from the user and the current date/time.
@@ -29,9 +32,16 @@ class AddTodo extends Component {
       this.props.addTodo(this.state);
       this.setState({
         content: "",
-        date: ""
+        date: "",
+        due: null,
       });
     }
+  };
+  // handDueDate function
+  handleDueDate = (event) => {
+    this.setState({
+      due: new Date(event).toLocaleDateString(),
+    });
   };
   render() {
     return (
@@ -45,13 +55,26 @@ class AddTodo extends Component {
       <div>
         <TextField
           label="Add New Item"
+          id="new-item-input"
+          data-testid = "new-item-input"
           variant="outlined"
           onChange={this.handleChange}
           value={this.state.content}
         />
+        <LocalizationProvider dateAdapter={AdapterDateFns}>         
+          <DesktopDatePicker
+           id="new-item-date"
+           label="Due Date"
+           onChange={this.handleDueDate}
+           value={this.due}
+           renderInput={(params) => <TextField {...params} />}
+          />
+        </LocalizationProvider>
         <Button
           style={{ marginLeft: "10px" }}
           onClick={this.handleSubmit}
+          id="new-item-button"
+          data-testid = "new-item-button"
           variant="contained"
           color="primary"
         >
